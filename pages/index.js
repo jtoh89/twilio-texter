@@ -10,9 +10,12 @@ const Home = () => {
   const [smsHistory, setSmsHistory] = useState({});
   const [authSuccess, setAuthSuccess] = useState(false);
   const [authError, setAuthError] = useState(false);
+  const [authErrorMsg, setAuthErrorMsg] = useState("");
 
   const getTwilioSmsHistory = async (e) => {
     e.preventDefault();
+    setAuthSuccess(false);
+    setAuthError(false);
 
     const res = await fetch("/api/getSmsHistory", {
       method: "POST",
@@ -26,6 +29,7 @@ const Home = () => {
 
     if (apiResponse.status !== 200) {
       setAuthError(true);
+      setAuthErrorMsg(apiResponse.message);
     } else {
       console.log("apiResponse: ", apiResponse);
       setAuthSuccess(true);
@@ -44,27 +48,31 @@ const Home = () => {
     setSmsError(false);
     setSuccess(false);
 
-    // const res = await fetch("/api/sendMessage", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     twilioAccountSid: twilioAccountSid,
-    //     twilioTokenID: twilioTokenID,
-    //     twilioPhone: twilioPhone,
-    //     toPhoneNum: selectedPhoneNum,
-    //     message: message,
-    //   }),
-    // });
-    // const apiResponse = await res.json();
+    const res = await fetch("/api/sendMessage", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        twilioAccountSid: twilioAccountSid,
+        twilioTokenID: twilioTokenID,
+        twilioPhone: twilioPhone,
+        toPhoneNum: selectedPhoneNum,
+        message: message,
+      }),
+    });
+    const apiResponse = await res.json();
 
-    // if (apiResponse.success) {
-    //   setSuccess(true);
-    // } else {
-    //   setSmsError(true);
-    // }
-    // setLoading(false);
+    console.log("apiResponse: ", apiResponse);
+
+    if (apiResponse.success) {
+      setSuccess(true);
+      setMessage("");
+      setSmsHistory(apiResponse.newSmsHistory);
+    } else {
+      setSmsError(true);
+    }
+    setLoading(false);
   };
 
   const [selectedPhoneNum, setSelectedPhoneNum] = useState(false);
@@ -104,7 +112,7 @@ const Home = () => {
           Get SMS History
         </button>
         {authSuccess && <p className={styles.success}>Twilio authentication successful!</p>}
-        {authError && <p className={styles.error}>Something went wrong. Please check the number.</p>}
+        {authError && <p className={styles.error}>{authErrorMsg}</p>}
       </form>
 
       {authSuccess && (
@@ -139,13 +147,14 @@ const Home = () => {
 
             <form className={styles.smsForm} onSubmit={sendMessage}>
               <div className={styles.formGroup}>
-                <label htmlFor="message">Message</label>
+                <label htmlFor="message"></label>
                 <textarea
                   onChange={(e) => setMessage(e.target.value)}
                   id="message"
                   required
                   placeholder="Message"
                   className={styles.textarea}
+                  value={message}
                 ></textarea>
               </div>
               <button disabled={loading} type="submit" className={styles.button}>

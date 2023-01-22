@@ -111,6 +111,14 @@
 }
 
 .smsForm {
-  /* width: 500px; */
   padding: 20px;
+}
+
+@media (max-width: 768px) {
+  .form {
+    width: 100%;
+  }
+  .smsContainer {
+    width: 100%;
+  }
 }
