@@ -117,8 +117,8 @@ const Home = () => {
           <div className={styles.smsContainer}>
             <div className={styles.smsSelectContainer}>
               <label className={styles.smsSelectLabel}>Select Phone Number</label>
-              <select value="" className={styles.smsSelect} onChange={handleSelect}>
-                <option value="" disabled>
+              <select defaultValue="default" className={styles.smsSelect} onChange={handleSelect}>
+                <option value="default" disabled>
                   Select a number
                 </option>
                 {Object.keys(smsHistory).map((option, i) => {
