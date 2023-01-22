@@ -1,0 +1,116 @@
+.container {
+  padding: 50px 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.form {
+  box-shadow: var(--boxshadow);
+  width: 500px;
+  padding: 20px;
+  border-radius: var(--border-radius);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 15px;
+}
+
+.title {
+  line-height: 1.15;
+  font-size: 1.3rem;
+}
+
+.input,
+.textarea {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid;
+}
+
+.button {
+  display: block;
+  width: 100%;
+  padding: 10px 0;
+}
+
+.button:hover {
+  cursor: pointer;
+}
+
+.button:disabled {
+  cursor: progress;
+}
+
+.success {
+  color: green;
+}
+
+.error {
+  color: red;
+}
+
+.smsContainer {
+  display: grid;
+  margin-top: 15px;
+  width: 500px;
+  box-shadow: var(--boxshadow);
+  border-radius: var(--border-radius);
+}
+
+.smsSelectContainer {
+  display: grid;
+  margin: 0 auto;
+  padding: 15px 0;
+}
+
+.smsSelectLabel {
+  margin-bottom: 5px;
+}
+
+.smsSelect {
+  padding: 5px;
+  text-align: center;
+  font-size: 15px;
+}
+
+.smsSelect:hover {
+  cursor: pointer;
+}
+
+.smsLogContainer {
+  background-color: #e8e8eb;
+  padding: 15px 8px;
+}
+
+.sms {
+  max-width: 250px;
+  padding: 8px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+}
+
+.smsLeft {
+  background-color: #ffffff;
+  margin-right: auto;
+}
+
+.smsRight {
+  background-color: #00dc4a;
+  margin-left: auto;
+}
+
+.smsDatetime {
+  margin-top: 15px;
+  text-align: right;
+  font-size: 10px;
+}
+
+.smsForm {
+  /* width: 500px; */
+  padding: 20px;
+}
