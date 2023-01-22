@@ -1,7 +1,7 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import { useState } from "react";
-import { phoneFormat } from "../utils";
+import { phoneFormat, transformDateTime } from "../utils";
 
 const Home = () => {
   const [twilioPhone, setTwilioPhone] = useState("");
@@ -31,7 +31,6 @@ const Home = () => {
       setAuthError(true);
       setAuthErrorMsg(apiResponse.message);
     } else {
-      console.log("apiResponse: ", apiResponse);
       setAuthSuccess(true);
       setSmsHistory(apiResponse.smsHistory);
     }
@@ -62,8 +61,6 @@ const Home = () => {
       }),
     });
     const apiResponse = await res.json();
-
-    console.log("apiResponse: ", apiResponse);
 
     if (apiResponse.success) {
       setSuccess(true);
@@ -109,7 +106,7 @@ const Home = () => {
           />
         </div>
         <button disabled={loading} type="submit" className={styles.button}>
-          Get SMS History
+          Authenticate
         </button>
         {authSuccess && <p className={styles.success}>Twilio authentication successful!</p>}
         {authError && <p className={styles.error}>{authErrorMsg}</p>}
@@ -120,8 +117,8 @@ const Home = () => {
           <div className={styles.smsContainer}>
             <div className={styles.smsSelectContainer}>
               <label className={styles.smsSelectLabel}>Select Phone Number</label>
-              <select className={styles.smsSelect} onChange={handleSelect}>
-                <option value="none" disabled selected>
+              <select value="" className={styles.smsSelect} onChange={handleSelect}>
+                <option value="" disabled>
                   Select a number
                 </option>
                 {Object.keys(smsHistory).map((option, i) => {
@@ -136,10 +133,12 @@ const Home = () => {
             <div className={styles.smsLogContainer}>
               {smsHistory[selectedPhoneNum] &&
                 smsHistory[selectedPhoneNum].map((msg, i) => {
+                  const finalDate = transformDateTime(msg.datetime);
+
                   return (
                     <div className={`${styles.sms} ${msg.direction === "inbound" ? styles.smsLeft : styles.smsRight}`} key={i}>
                       <p>{msg.body}</p>
-                      <p className={styles.smsDatetime}>{msg.datetime}</p>
+                      <p className={styles.smsDatetime}>{finalDate}</p>
                     </div>
                   );
                 })}

@@ -18,3 +18,12 @@ export const phoneFormat = (input) => {
   }
   return input;
 };
+
+export const transformDateTime = (datetime) => {
+  const event = new Date(datetime);
+  const formatDate = event.toString();
+  const regex = /GMT-\d\d\d\d /i;
+  const finalDate = formatDate.replace(regex, "");
+
+  return finalDate;
+};
