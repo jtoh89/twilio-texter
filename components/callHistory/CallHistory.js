@@ -3,15 +3,13 @@ import globalstyles from "../../styles/Home.module.css";
 import { transformDateTime, formatPhoneFromTwilioFormat } from "../../utils";
 import { useState } from "react";
 
-const CallHistory = ({ callHistory, selectedPhoneNum }) => {
+const CallHistory = ({ callHistory }) => {
   const [direction, setDirection] = useState("all");
 
   const handleDirectionChange = (e) => {
-    // console.log("direction e: ", e.target.value);
     setDirection(e.target.value);
   };
 
-  console.log("direction: ", direction);
   return (
     <div className={styles.container}>
       <h1 className={globalstyles.title}>Call History</h1>

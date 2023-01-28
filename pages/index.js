@@ -15,11 +15,13 @@ const Home = () => {
   const [authSuccess, setAuthSuccess] = useState(false);
   const [authError, setAuthError] = useState(false);
   const [authErrorMsg, setAuthErrorMsg] = useState("");
+  const [authenticating, setAuthenticating] = useState(false);
 
   const getTwilioHistory = async (e) => {
     e.preventDefault();
     setAuthSuccess(false);
     setAuthError(false);
+    setAuthenticating(true);
 
     const res = await fetch("/api/getTwilioHistory", {
       method: "POST",
@@ -33,9 +35,11 @@ const Home = () => {
 
     if (apiResponse.status !== 200) {
       setAuthError(true);
+      setAuthenticating(false);
       setAuthErrorMsg(apiResponse.message);
     } else {
       setAuthSuccess(true);
+      setAuthenticating(false);
       setSmsHistory(apiResponse.smsHistory);
       setCallHistory(apiResponse.callHistory);
     }
@@ -122,8 +126,8 @@ const Home = () => {
             required
           />
         </div>
-        <button disabled={loading} type="submit" className={styles.button}>
-          Authenticate
+        <button disabled={authenticating} type="submit" className={styles.button}>
+          {authenticating ? "please wait.." : "Authenticate"}
         </button>
         {authSuccess && <p className={styles.success}>Twilio authentication successful!</p>}
         {authError && <p className={styles.error}>{authErrorMsg}</p>}

@@ -18,9 +18,6 @@ export default async function getTwilioHistory(req, res) {
           return;
         }
 
-        // console.log(`call. to: ${call.to}. from: ${call.from}. dateCreated: ${call.dateCreated}.`);
-        // console.log("Call: ", call);
-
         if (call.direction === "inbound") {
           callHistory.push({
             direction: call.direction,
