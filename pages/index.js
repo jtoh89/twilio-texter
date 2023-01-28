@@ -2,27 +2,31 @@ import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import { useState } from "react";
 import { phoneFormat, transformDateTime } from "../utils";
+import Sms from "../components/sms/Sms";
+import CallHistory from "../components/callHistory/CallHistory";
 
 const Home = () => {
   const [twilioPhone, setTwilioPhone] = useState("");
+  const [userPhone, setUserPhone] = useState("");
   const [twilioAccountSid, setTwilioAccountSid] = useState("");
   const [twilioTokenID, setTwilioTokenID] = useState("");
   const [smsHistory, setSmsHistory] = useState({});
+  const [callHistory, setCallHistory] = useState([]);
   const [authSuccess, setAuthSuccess] = useState(false);
   const [authError, setAuthError] = useState(false);
   const [authErrorMsg, setAuthErrorMsg] = useState("");
 
-  const getTwilioSmsHistory = async (e) => {
+  const getTwilioHistory = async (e) => {
     e.preventDefault();
     setAuthSuccess(false);
     setAuthError(false);
 
-    const res = await fetch("/api/getSmsHistory", {
+    const res = await fetch("/api/getTwilioHistory", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ twilioPhone: twilioPhone, twilioAccountSid: twilioAccountSid, twilioTokenID: twilioTokenID }),
+      body: JSON.stringify({ twilioPhone: twilioPhone, twilioAccountSid: twilioAccountSid, twilioTokenID: twilioTokenID, userPhone: userPhone }),
     });
 
     const apiResponse = await res.json();
@@ -33,6 +37,7 @@ const Home = () => {
     } else {
       setAuthSuccess(true);
       setSmsHistory(apiResponse.smsHistory);
+      setCallHistory(apiResponse.callHistory);
     }
   };
 
@@ -72,9 +77,9 @@ const Home = () => {
     setLoading(false);
   };
 
-  const [selectedPhoneNum, setSelectedPhoneNum] = useState(false);
-  const handleSelect = (e) => {
-    setSelectedPhoneNum(e.target.value);
+  const [view, setView] = useState("smshistory");
+  const handleView = (e) => {
+    setView(e.target.value);
   };
 
   return (
@@ -83,7 +88,7 @@ const Home = () => {
         <title>Twilio Texter</title>
       </Head>
 
-      <form className={styles.form} onSubmit={getTwilioSmsHistory}>
+      <form className={styles.form} onSubmit={getTwilioHistory}>
         <h1 className={styles.title}>Twilio Account</h1>
         <div className={styles.formGroup}>
           <label>Twilio Account SID</label>
@@ -105,6 +110,18 @@ const Home = () => {
             required
           />
         </div>
+        <div className={styles.formGroup}>
+          <label>User Phone Number (number that calls are forward to/from)</label>
+          <input
+            onChange={(e) => {
+              setUserPhone(phoneFormat(e.target.value));
+            }}
+            placeholder="User Phone Number"
+            className={styles.input}
+            value={userPhone}
+            required
+          />
+        </div>
         <button disabled={loading} type="submit" className={styles.button}>
           Authenticate
         </button>
@@ -114,55 +131,19 @@ const Home = () => {
 
       {authSuccess && (
         <>
-          <div className={styles.smsContainer}>
-            <div className={styles.smsSelectContainer}>
-              <label className={styles.smsSelectLabel}>Select Phone Number</label>
-              <select defaultValue="default" className={styles.smsSelect} onChange={handleSelect}>
-                <option value="default" disabled>
-                  Select a number
-                </option>
-                {Object.keys(smsHistory).map((option, i) => {
-                  return (
-                    <option key={i} value={option}>
-                      {option}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-            <div className={styles.smsLogContainer}>
-              {smsHistory[selectedPhoneNum] &&
-                smsHistory[selectedPhoneNum].map((msg, i) => {
-                  const finalDate = transformDateTime(msg.datetime);
-
-                  return (
-                    <div className={`${styles.sms} ${msg.direction === "inbound" ? styles.smsLeft : styles.smsRight}`} key={i}>
-                      <p>{msg.body}</p>
-                      <p className={styles.smsDatetime}>{finalDate}</p>
-                    </div>
-                  );
-                })}
-            </div>
-
-            <form className={styles.smsForm} onSubmit={sendMessage}>
-              <div className={styles.formGroup}>
-                <label htmlFor="message"></label>
-                <textarea
-                  onChange={(e) => setMessage(e.target.value)}
-                  id="message"
-                  required
-                  placeholder="Message"
-                  className={styles.textarea}
-                  value={message}
-                ></textarea>
-              </div>
-              <button disabled={loading} type="submit" className={styles.button}>
-                Send Message
-              </button>
-              {success && <p className={styles.success}>Message sent successfully.</p>}
-              {smsError && <p className={styles.error}>Something went wrong. Please check the number.</p>}
-            </form>
+          <div className={styles.selectContainer}>
+            <label className={styles.selectLabel}>Select View</label>
+            <select className={styles.select} onChange={handleView}>
+              <option value="smshistory">SMS History</option>
+              <option value="callhistory">Call History</option>
+            </select>
           </div>
+
+          {view === "smshistory" ? (
+            <Sms smsHistory={smsHistory} success={success} loading={loading} smsError={smsError} sendMessage={sendMessage} message={message} />
+          ) : (
+            <CallHistory callHistory={callHistory} />
+          )}
         </>
       )}
     </div>

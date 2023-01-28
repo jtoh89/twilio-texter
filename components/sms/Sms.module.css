@@ -1,0 +1,35 @@
+.container {
+  display: grid;
+  margin-top: 15px;
+  width: var(--width);
+  box-shadow: var(--boxshadow);
+  border-radius: var(--border-radius);
+}
+
+.logContainer {
+  background-color: #e8e8eb;
+  padding: 15px 8px;
+}
+
+.sms {
+  max-width: 300px;
+  padding: 8px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+}
+
+.smsLeft {
+  background-color: #ffffff;
+  margin-right: auto;
+}
+
+.smsRight {
+  background-color: #00dc4a;
+  margin-left: auto;
+}
+
+.datetime {
+  margin-top: 15px;
+  text-align: right;
+  font-size: 10px;
+}

@@ -1,18 +1,48 @@
-export default async function getSmsHistory(req, res) {
+export default async function getTwilioHistory(req, res) {
   try {
-    const { twilioPhone, twilioAccountSid, twilioTokenID } = req.body;
+    const { twilioPhone, twilioAccountSid, twilioTokenID, userPhone } = req.body;
+
     const client = require("twilio")(twilioAccountSid, twilioTokenID);
 
     const formattedPhone = "+1" + twilioPhone.replace("(", "").replace(")", "").replace("-", "").replace(" ", "");
+    const formattedUserPhone = "+1" + userPhone.replace("(", "").replace(")", "").replace("-", "").replace(" ", "");
 
-    console.log("formattedPhone: ", formattedPhone);
+    const callHistory = [];
+    await client.calls.list().then((calls) => {
+      calls.forEach((call) => {
+        if (call.to !== formattedPhone && call.from !== formattedPhone) {
+          return;
+        }
+
+        if (call.to === formattedUserPhone || call.from === formattedUserPhone) {
+          return;
+        }
+
+        // console.log(`call. to: ${call.to}. from: ${call.from}. dateCreated: ${call.dateCreated}.`);
+        // console.log("Call: ", call);
+
+        if (call.direction === "inbound") {
+          callHistory.push({
+            direction: call.direction,
+            callTo: call.to,
+            callFrom: call.from,
+            dateCreated: call.dateCreated,
+          });
+        } else if (call.direction === "outbound-dial") {
+          callHistory.push({
+            direction: call.direction,
+            callTo: call.to,
+            callFrom: call.from,
+            dateCreated: call.dateCreated,
+          });
+        }
+      });
+    });
 
     const smsHistory = {};
 
     await client.messages.list().then((messages) =>
       messages.forEach((m) => {
-        // console.log(m);
-
         if (m.to !== formattedPhone && m.from !== formattedPhone) {
           return;
         }
@@ -44,10 +74,10 @@ export default async function getSmsHistory(req, res) {
 
     const allPhoneNums = Object.keys(smsHistory);
 
-    if (allPhoneNums.length === 0) {
+    if (allPhoneNums.length === 0 && callHistory.length === 0) {
       res.json({
         status: 400,
-        message: `No text history found for Twilio Number: ${twilioPhone}`,
+        message: `No activity found for Twilio Number: ${twilioPhone}`,
       });
     } else {
       allPhoneNums.map((phoneNum, i) => {
@@ -60,11 +90,13 @@ export default async function getSmsHistory(req, res) {
 
       res.json({
         smsHistory: smsHistory,
+        callHistory: callHistory,
         status: 200,
         message: "Authentication successful",
       });
     }
   } catch (error) {
+    console.log("Error: ", error);
     res.json({
       status: 400,
       message: "Authentication failed. Check provided SID and Token ID",

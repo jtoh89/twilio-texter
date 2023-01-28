@@ -1,0 +1,30 @@
+.container {
+  display: grid;
+  margin-top: 15px;
+  width: var(--width);
+  box-shadow: var(--boxshadow);
+  border-radius: var(--border-radius);
+}
+.selectContainer {
+  display: grid;
+  margin: 0 auto;
+  padding: 15px 0;
+}
+
+.selectLabel {
+  margin-bottom: 5px;
+}
+
+.select {
+  padding: 5px;
+  text-align: center;
+  font-size: 15px;
+}
+
+.select:hover {
+  cursor: pointer;
+}
+
+.table {
+  text-align: left;
+}

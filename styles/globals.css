@@ -15,6 +15,13 @@ a {
   box-sizing: border-box;
   --boxshadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
   --border-radius: 5px;
+  --width: 600px;
+}
+
+@media (max-width: 768px) {
+  * {
+    --width: 100%;
+  }
 }
 
 @media (prefers-color-scheme: dark) {

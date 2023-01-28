@@ -8,7 +8,7 @@
 
 .form {
   box-shadow: var(--boxshadow);
-  width: 500px;
+  width: var(--width);
   padding: 20px;
   border-radius: var(--border-radius);
 }
@@ -23,6 +23,7 @@
 .title {
   line-height: 1.15;
   font-size: 1.3rem;
+  text-align: center;
 }
 
 .input,
@@ -54,64 +55,24 @@
   color: red;
 }
 
-.smsContainer {
-  display: grid;
-  margin-top: 15px;
-  width: 500px;
-  box-shadow: var(--boxshadow);
-  border-radius: var(--border-radius);
-}
-
-.smsSelectContainer {
+.selectContainer {
   display: grid;
   margin: 0 auto;
   padding: 15px 0;
 }
 
-.smsSelectLabel {
+.selectLabel {
   margin-bottom: 5px;
 }
 
-.smsSelect {
+.select {
   padding: 5px;
   text-align: center;
   font-size: 15px;
 }
 
-.smsSelect:hover {
+.select:hover {
   cursor: pointer;
-}
-
-.smsLogContainer {
-  background-color: #e8e8eb;
-  padding: 15px 8px;
-}
-
-.sms {
-  max-width: 300px;
-  padding: 8px;
-  margin-bottom: 5px;
-  border-radius: 5px;
-}
-
-.smsLeft {
-  background-color: #ffffff;
-  margin-right: auto;
-}
-
-.smsRight {
-  background-color: #00dc4a;
-  margin-left: auto;
-}
-
-.smsDatetime {
-  margin-top: 15px;
-  text-align: right;
-  font-size: 10px;
-}
-
-.smsForm {
-  padding: 20px;
 }
 
 @media (max-width: 768px) {
